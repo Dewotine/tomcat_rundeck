@@ -1,0 +1,31 @@
+---
+#- name: Configuration du serveur mariadb pour rundeck
+#  hosts: mariadb
+#  become: True
+#  vars:
+#    mariadb_conf_file: /etc/mysql/my.cnf
+#    rundeck_db_name: rundeck
+#    tuning_file_orig: templates/optimize.j2
+#    tuning_file_dest: /etc/sysctl.d/optimize.conf
+#    limit_file_orig: templates/optimize.j2
+#    limit_file_dest: /etc/security/limits.d/db_limits.conf
+#  roles:
+#    - optimize_server
+#    - { role: mariadb, rundeck_db_user: rundeck,  rundeck_db_password: rundeck }
+
+- name: Configuration du serveur rundeck
+  hosts: rundeck
+  become: True
+  vars:
+    env_file: /etc/environment
+    rundeck_war: rundeck-2.6.9-1-GA.deb
+    rundeck_repo: http://dl.bintray.com/rundeck/rundeck-deb/
+    rundeck_conf_file: "{{ rundeck_base }}/etc/rundeck-config.properties"
+    rundeck_framework_file: "{{ rundeck_base }}/etc/framework.properties"
+    rundeck_profile_file: "{{ rundeck_base }}/etc/profile"
+    rundeck_log_file: "{{ rundeck_base }}/etc/log4j.properties"
+    rundeck_auth_file: "{{ rundeck_base }}/etc/jaas-loginmodule.conf"
+    rundeck_useraccount_file: "{{ rundeck_base }}/etc/realm.properties"
+  roles:
+    - tomcat
+  

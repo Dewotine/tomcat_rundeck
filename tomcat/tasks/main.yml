@@ -1,0 +1,37 @@
+---
+- name: Configure a rundeck server
+  hosts: rundeck
+  become: True
+  environment:
+    RDECK_BASE: "{{ rundeck_base }}"
+  vars:
+    env_file: /etc/environment
+    #rundeck_jar: rundeck-launcher-2.6.8.jar
+    #rundeck_repo: http://download.rundeck.org/jar
+    rundeck_deb: rundeck-2.6.9-1-GA.deb
+    rundeck_repo: http://dl.bintray.com/rundeck/rundeck-deb/
+    rundeck_conf_sql: /root/rundeck.sql
+    mariadb_conf_file: /etc/mysql/my.cnf
+    rundeck_conf_file: "{{ rundeck_base }}/etc/rundeck-config.properties"
+    rundeck_framework_file: "{{ rundeck_base }}/etc/framework.properties"
+    rundeck_profile_file: "{{ rundeck_base }}/etc/profile"
+    rundeck_log_file: "{{ rundeck_base }}/etc/log4j.properties"
+    rundeck_auth_file: "{{ rundeck_base }}/etc/jaas-loginmodule.conf"
+    rundeck_useraccount_file: "{{ rundeck_base }}/etc/realm.properties"
+  vars_files:
+    - secrets.yml
+  tasks:
+    - name: Add repositories
+      apt_repository: repo='deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' state=present
+
+    - name: Add repositories
+      apt_repository: repo='deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' state=present
+    - name: Add apt key
+      apt_key: EEA14886 
+
+    - name: install apt packages
+      apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+      with_items:
+        - oracle-java8-installer
+        - mariadb-client
+        - vim
