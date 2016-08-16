@@ -1,0 +1,56 @@
+---
+- name: install apt packages
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+  with_items:
+    - mariadb-server
+    - mariadb-client
+    - python-mysqldb
+    - vim
+
+- name: Effacer la BDD de test
+  mysql_db: db=test state=absent
+
+# Configuration de mariadb
+- name: Copy mariadb config file
+  template: 
+    src=templates/my.cnf.j2 
+    dest={{ mariadb_conf_file }} 
+    backup=yes
+  #notify: restart mysql
+
+- name: Création de la base de données pour Rundeck
+  mysql_db:
+    name={{ rundeck_db_name }}
+    state=present
+
+- name: Créer le user correspondant
+  mysql_user:
+    name={{rundeck_db_user}}
+    password={{ rundeck_db_password }}
+    host="%"
+    priv=*.*:ALL,GRANT state=present
+
+- name: Supprimer les comptes root surnuméraires
+  mysql_user: 
+    name=root 
+    host="{{item}}" 
+    priv=*.*:ALL,GRANT 
+    state=absent
+  with_items:
+    - ::1
+    - "{{ansible_hostname}}"
+
+- name: Fixer le mot de passe de l'utilisateur root
+  mysql_user: 
+    name=root 
+    password={{ rundeck_db_password }} 
+    host="{{item}}" 
+    priv=*.*:ALL,GRANT 
+    state=present
+  with_items:
+    - "{{ansible_eth1.ipv4.address}}"
+    - 127.0.0.1
+    - localhost
+
+- name: Relance du service mysql
+  service: name=mysql state=restarted enabled=yes
