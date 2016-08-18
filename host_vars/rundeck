@@ -1,0 +1,4 @@
+rundeck_base: /rdc/appl/n1
+rd_appli_user: rdcrc1a1
+rundeck_db_user: rundeck
+rundeck_db_password: rundeck

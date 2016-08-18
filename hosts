@@ -1,0 +1,9 @@
+[mariadb]
+mariadb ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200
+
+[rundeck]
+rundeck ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222
+
+[tests]
+dc12phc061 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201
+dc12phc041 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2202

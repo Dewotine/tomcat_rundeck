@@ -1,0 +1,4 @@
+my_sql_port: 3306
+rundeck_db_user: rundeck
+rundeck_db_password: rundeck
+

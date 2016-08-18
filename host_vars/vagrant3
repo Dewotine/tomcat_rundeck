@@ -1,0 +1,3 @@
+my_sql_port: 3306
+db_user: test
+db_password: test
