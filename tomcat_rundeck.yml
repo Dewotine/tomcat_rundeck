@@ -17,6 +17,7 @@
   hosts: rundeck
   become: True
   vars:
+    # Variables for Tomcat
     tomcat_major_version: 8
     tomcat_version: 8.0.36
     tomcat_folder: /usr/share/tomcat{{ tomcat_major_version }}
@@ -24,9 +25,14 @@
     tomcat_group: tomcat
     tomcat_path: /usr/share/tomcat # Link to the actual tomcat installation folder
 
+    # Variables for MariaDB
+    mariadb_conf_file: /etc/mysql/my.cnf
+    rundeck_db_name: rundeck
+    my_sql_port: 3306
+
     env_file: /etc/environment
-    rundeck_war: rundeck-2.6.9-1-GA.deb
-    rundeck_repo: http://dl.bintray.com/rundeck/rundeck-deb/
+    rundeck_war: rundeck-2.6.9.war
+    rundeck_repo: http://download.rundeck.org/war
     rundeck_conf_file: "{{ rundeck_base }}/etc/rundeck-config.properties"
     rundeck_framework_file: "{{ rundeck_base }}/etc/framework.properties"
     rundeck_profile_file: "{{ rundeck_base }}/etc/profile"
@@ -35,4 +41,6 @@
     rundeck_useraccount_file: "{{ rundeck_base }}/etc/realm.properties"
   roles:
     - tomcat
+ #   - mariadb
+    - rundeck
   
