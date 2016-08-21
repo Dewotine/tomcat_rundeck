@@ -1,15 +1,73 @@
-- name: Add repositories
-  apt_repository: repo='deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' state=present
+---
+- name: Création du groupe Tomcat
+  group: name={{ tomcat_group }}
+
+- name: Création de l'utilisateur Tomcat
+  user: 
+    name={{ tomcat_user }}
+    group={{ tomcat_group }}
+    comment="Tomcat Java Servlet and JSP engine"
+    shell=/bin/bash
 
 - name: Add repositories
-  apt_repository: repo='deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' state=present
+  apt_repository: 
+    repo='deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' 
+    state=present
+
+- name: Add repositories
+  apt_repository: 
+    repo='deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' 
+    state=present
 
 - name: Add apt key
-  apt_key: keyserver=keyserver.ubuntu.com id=EEA14886 
+  apt_key: 
+    keyserver=keyserver.ubuntu.com 
+    id=EEA14886 
+
+- name : Activer l'option d'installation silencieuse pour Oracle
+  shell: echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
+
+- name: apt-get update
+  apt: update_cache=yes
 
 - name: install apt packages
   apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
   with_items:
+    - python-software-properties 
+    - debconf-utils
     - oracle-java8-installer
     - mariadb-client
     - vim
+
+- name: Download Tomcat archive
+  get_url: 
+    url="http://www.us.apache.org/dist/tomcat/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz" 
+    dest=/tmp/
+
+- name: Create the folder {{ tomcat_folder }}
+  file: 
+    path={{ tomcat_folder }}
+    state=directory 
+
+- name: Uncompress Tomcat archive in {{ tomcat_folder }}
+  unarchive: 
+    src=/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz 
+    dest={{ tomcat_folder }}
+    copy=no
+
+- name: Create the link {{tomcat_path}}
+  file: 
+    src=/usr/share/tomcat{{tomcat_major_version}}/apache-tomcat-{{ tomcat_version }}
+    dest={{tomcat_path}}
+    state=link
+    owner={{ tomcat_user }}
+    group={{ tomcat_group }}
+
+- name: Fixer les droits des fichiers de /usr/share/tomcat{{tomcat_major_version}}/apache-tomcat-{{ tomcat_version }}
+  file: 
+    path=/usr/share/tomcat{{tomcat_major_version}}/apache-tomcat-{{ tomcat_version }}
+    state=directory
+    recurse=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_group }}
+
