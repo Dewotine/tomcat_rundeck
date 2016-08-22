@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
 	
 	config.vm.define "rundeck" do  |rundeck|
   	rundeck.vm.box = "debian/jessie64"
-	rundeck.vm.network "public_network", ip: "192.168.1.200"
+	rundeck.vm.network "public_network", ip: "192.168.1.200", bridge: "eth0"
 	rundeck.vm.hostname = "rundeck"
   	rundeck.vm.network "forwarded_port", guest: 80, host: 8080
   	rundeck.vm.network "forwarded_port", guest: 443, host: 8443
@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
 
         config.vm.define "mariadb" do  |rundeck|
         rundeck.vm.box = "debian/jessie64"
-        rundeck.vm.network "public_network", ip: "192.168.1.201"
+        rundeck.vm.network "public_network", ip: "192.168.1.201", bridge: "eth0"
         rundeck.vm.hostname = "mariadb"
         rundeck.vm.network "forwarded_port", guest: 80, host: 8081
         rundeck.vm.network "forwarded_port", guest: 443, host: 8444
@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
 	config.vm.define "dc12phc061" do  |centos_test|
   	centos_test.vm.box = "centos/7"
   	centos_test.vm.hostname = "dc12phc061"
-	centos_test.vm.network "public_network", ip: "192.168.1.202"
+	centos_test.vm.network "public_network", ip: "192.168.1.202", bridge: "eth0"
   	centos_test.vm.network "forwarded_port", guest: 80, host: 8082
   	centos_test.vm.network "forwarded_port", guest: 443, host: 8445
 	end
@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
         config.vm.define "dc12phc041" do  |centos_test|
         centos_test.vm.box = "centos/7"
         centos_test.vm.hostname = "dc12phc041"
-        centos_test.vm.network "public_network", ip: "192.168.1.203"
+        centos_test.vm.network "public_network", ip: "192.168.1.203", bridge: "eth0"
         centos_test.vm.network "forwarded_port", guest: 80, host: 8083
         centos_test.vm.network "forwarded_port", guest: 443, host: 8446
         end
