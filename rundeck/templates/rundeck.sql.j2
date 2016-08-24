@@ -1,0 +1,7 @@
+use mysql;
+#drop user ;
+#flush privileges;
+#create user '{{rundeck_db_user}}'@'%' identified by '{{rundeck_db_password}}' ;
+grant all privileges on *.* to '{{rundeck_db_user}}'@'%' identified by '{{rundeck_db_password}}' ;
+flush privileges;
+create database if not exists rundeck;

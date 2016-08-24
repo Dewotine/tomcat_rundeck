@@ -1,2 +1,75 @@
 ---
-# tasks file for rundeck
+- name: Create the folder {{ tomcat_path }}/webapps/rundeck
+  file:
+    path={{ tomcat_path }}/webapps/rundeck
+    state=directory
+    owner={{ tomcat_user }}
+    group={{ tomcat_group }}
+
+- name: Create the folder {{ tomcat_path }}/rdbase
+  file:
+    path={{ tomcat_path }}/rdbase
+    state=directory
+    owner={{ tomcat_user }}
+    group={{ tomcat_group }}
+
+- name: Create the folder {{ tomcat_path }}/rdbase/etc
+  file:
+    path={{ tomcat_path }}/rdbase/etc
+    state=directory
+    owner={{ tomcat_user }}
+    group={{ tomcat_group }}
+
+- name: Download the war file {{ rundeck_war }}
+  get_url: 
+    url={{ rundeck_repo }}/{{ rundeck_war }}
+    dest=/tmp/{{ rundeck_war }}
+
+- name: Copie de la webapp dans l'instance
+  command: mv /tmp/{{ rundeck_war }} {{ tomcat_path }}/webapps/rundeck
+
+# Copie des fichiers de configuration 
+- name: Copie des fichiers de configuration de rundeck (rundeck-config-properties)
+  template:
+    src=templates/rundeck-config-properties.j2
+    dest={{ rundeck_conf_file }}
+    backup=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_user }}
+- name: Copie des fichiers de configuration de rundeck2 (framework.properties)
+  template:
+    src=templates/framework.properties.j2
+    dest={{ rundeck_framework_file }}
+    backup=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_user }}
+- name: Copie des fichiers de configuration de rundeck3 (profile)
+  template:
+    src=templates/profile.j2
+    dest={{ rundeck_profile_file }}
+    backup=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_user }}
+- name: Copie des fichiers de configuration de rundeck4 (log4j.properties)
+  template:
+    src=templates/log4j.properties.j2
+    dest={{ rundeck_log_file }}
+    backup=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_user }}
+- name: Copie des fichiers de configuration de rundeck5 (jaas-loginmodule.conf)
+  template:
+    src=templates/jaas-loginmodule.conf.j2
+    dest={{ rundeck_auth_file }}
+    backup=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_user }}
+- name: Copie des fichiers de configuration de rundeck6 (realm.properties)
+  template:
+    src=templates/realm.properties.j2
+    dest={{ rundeck_useraccount_file }}
+    backup=yes
+    owner={{ tomcat_user }}
+    group={{ tomcat_user }}
+
+

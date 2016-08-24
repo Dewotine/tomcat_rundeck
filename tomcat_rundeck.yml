@@ -31,6 +31,9 @@
     my_sql_port: 3306
 
     env_file: /etc/environment
+    rundeck_base: "{{ tomcat_path }}/rdbase"
+    rundeck_db_user: rundeck
+    rundeck_db_password: rundeck
     rundeck_war: rundeck-2.6.9.war
     rundeck_repo: http://download.rundeck.org/war
     rundeck_conf_file: "{{ rundeck_base }}/etc/rundeck-config.properties"
@@ -40,7 +43,7 @@
     rundeck_auth_file: "{{ rundeck_base }}/etc/jaas-loginmodule.conf"
     rundeck_useraccount_file: "{{ rundeck_base }}/etc/realm.properties"
   roles:
-    - tomcat
- #   - mariadb
-    - rundeck
+#    - tomcat
+    - mariadb
+#    - rundeck
   
